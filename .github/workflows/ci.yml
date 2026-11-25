@@ -41,7 +41,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - uses: dtolnay/rust-toolchain@stable
-      - uses: astral-sh/setup-uv@v10
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
       - run: uv venv --python 3.11
       - run: uv pip install 'maturin>=1.9,<2'
       - run: .venv/bin/maturin develop --release --manifest-path crates/axc-eval-python/Cargo.toml
