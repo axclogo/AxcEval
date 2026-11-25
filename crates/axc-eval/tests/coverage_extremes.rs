@@ -137,6 +137,16 @@ fn sql_compiles_all_supported_operator_shapes_and_dialects() {
         ),
         Err(AxcError::Sql { .. })
     ));
+    assert!(matches!(
+        compile_sql(
+            &condition(json!({"field":"missing","operator":"=","value":"x"})),
+            &catalog(),
+            Dialect::Clickhouse,
+            &columns(),
+            false
+        ),
+        Err(AxcError::ConditionInvalid { .. })
+    ));
 }
 
 #[test]
@@ -281,6 +291,7 @@ fn validator_handles_non_object_and_unknown_shape_inputs() {
         json!({"field":"typed","operator":"hasAny","value":[{"type":"","value":""}]}),
         json!({"field":"typed","operator":"hasAny","value":[{"type":1,"value":false}]}),
         json!({"field":"typed","operator":"hasAny","value":[{}]}),
+        json!({"field":"number","operator":"between","value":[2,1]}),
         json!({"field":"date","operator":"between","value":["2024-02-01","2024-01-01"]}),
         json!({"field":"time","operator":"between","value":["2024-02-01T00:00:00Z","2024-01-01T00:00:00Z"]}),
         json!({"field":"text","operator":"between","value":["z","a"]}),
@@ -309,4 +320,42 @@ fn evaluator_covers_nested_or_short_circuit_and_validation_errors() {
     ]});
     let record = json!({"text":"yes"}).as_object().unwrap().clone();
     assert_eq!(matches(&nested, &catalog(), &record, false, None), Ok(true));
+}
+
+#[test]
+fn explicit_operator_configurations_keep_typed_semantics() {
+    let custom_catalog = json!({"fields":[
+        {"name":"text","label":"Text","operators":[
+            {"name":">","valueShape":"scalar"},
+            {"name":"between","valueShape":"range"}
+        ]},
+        {"name":"number","label":"Number","dataType":"number","operators":[
+            {"name":"in","valueShape":"list"}
+        ]}
+    ]});
+
+    let equal_range = condition(json!({"field":"text","operator":"between","value":["a","a"]}));
+    assert!(
+        validate_condition(&equal_range, &custom_catalog, false)
+            .unwrap()
+            .is_empty()
+    );
+    let reversed_range = condition(json!({"field":"text","operator":"between","value":["z","a"]}));
+    assert!(
+        validate_condition(&reversed_range, &custom_catalog, false)
+            .unwrap()
+            .iter()
+            .any(|issue| issue.code == "rangeOrder")
+    );
+    let duplicate_numbers = condition(json!({"field":"number","operator":"in","value":[1,1]}));
+    assert!(
+        validate_condition(&duplicate_numbers, &custom_catalog, false)
+            .unwrap()
+            .iter()
+            .any(|issue| issue.code == "duplicate")
+    );
+
+    let ordered = condition(json!({"field":"text","operator":">","value":"a"}));
+    let record = json!({"text":"b"}).as_object().unwrap().clone();
+    assert_eq!(matches(&ordered, &custom_catalog, &record, false, None), Ok(true));
 }

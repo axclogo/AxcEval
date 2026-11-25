@@ -401,6 +401,12 @@ mod tests {
             value_sources: None,
         };
         assert_eq!(clickhouse_type(&json!([1, 2]), &field), "Array(Float64)");
+        let text_field = Field {
+            data_type: DataType::String,
+            ..field.clone()
+        };
+        assert_eq!(clickhouse_type(&json!(["a"]), &text_field), "Array(String)");
+        assert!(referenced_fields(&Value::Null).is_empty());
         assert_eq!(literal(&Value::Null), "NULL");
         assert_eq!(literal(&json!([true, 1, "x"])), "[TRUE, 1, 'x']");
 

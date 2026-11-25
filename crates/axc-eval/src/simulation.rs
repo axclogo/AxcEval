@@ -101,3 +101,20 @@ impl ConditionTrace {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn skipped_nodes_never_contribute_a_result() {
+        let skipped = ConditionTrace::Skipped {
+            path: vec!["rules".into(), 1usize.into()],
+            reason: SkipReason::AndShortCircuit,
+        };
+        assert_eq!(skipped.matched(), None);
+        let mut decisive = Vec::new();
+        skipped.collect_decisive(false, &mut decisive);
+        assert!(decisive.is_empty());
+    }
+}

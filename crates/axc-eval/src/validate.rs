@@ -91,7 +91,7 @@ fn check_rule(value: &Value, catalog: &Catalog, path: Vec<PathItem>, issues: &mu
         return;
     };
     let Some(field) = fields.get(field_name).copied().filter(|field| !field.disabled) else {
-        issues.push(Issue::new("unknownField", extend(&path, "field")).param("field", display_value(map.get("field"))));
+        issues.push(Issue::new("unknownField", extend(&path, "field")).param("field", field_name));
         return;
     };
     let Some(operator_value) = map.get("operator") else {
@@ -106,10 +106,7 @@ fn check_rule(value: &Value, catalog: &Catalog, path: Vec<PathItem>, issues: &mu
         .into_iter()
         .find(|candidate| candidate.name == operator_name)
     else {
-        issues.push(
-            Issue::new("unknownOperator", extend(&path, "operator"))
-                .param("operator", display_value(map.get("operator"))),
-        );
+        issues.push(Issue::new("unknownOperator", extend(&path, "operator")).param("operator", operator_name));
         return;
     };
     let Some(value) = map.get("value") else {
@@ -185,9 +182,7 @@ fn check_value(value: &Value, field: &Field, operator: &Operator, path: Vec<Path
                 } else if operator.value_shape == OperatorShape::List {
                     let key = serde_json::to_string(item).expect("serializing JSON value cannot fail");
                     if !seen.insert(key) {
-                        issues.push(
-                            Issue::new("duplicate", extend(&path, index)).param("value", display_value(Some(item))),
-                        );
+                        issues.push(Issue::new("duplicate", extend(&path, index)).param("value", display_value(item)));
                     }
                 }
             }
@@ -288,10 +283,9 @@ pub(crate) fn extend(path: &[PathItem], item: impl Into<PathItem>) -> Vec<PathIt
     result
 }
 
-fn display_value(value: Option<&Value>) -> String {
+fn display_value(value: &Value) -> String {
     match value {
-        Some(Value::String(text)) => text.clone(),
-        Some(value) => value.to_string(),
-        None => "undefined".to_owned(),
+        Value::String(text) => text.clone(),
+        value => value.to_string(),
     }
 }
