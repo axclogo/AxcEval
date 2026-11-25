@@ -1,0 +1,29 @@
+{
+  "catalog": {
+    "fields": [
+      {"name": "text", "label": "Text"},
+      {"name": "score", "label": "Score", "dataType": "number", "valueSources": ["value", "field"]},
+      {"name": "limit", "label": "Limit", "dataType": "number"},
+      {"name": "tags", "label": "Tags", "dataType": "array"}
+    ]
+  },
+  "cases": [
+    {
+      "name": "nested text and numeric rules",
+      "condition": {"combinator": "and", "not": false, "rules": [
+        {"field": "text", "operator": "contains", "value": "ALPHA"},
+        {"field": "score", "operator": ">=", "value": "limit", "valueSource": "field"}
+      ]},
+      "record": {"text": "Alpha beta", "score": 8, "limit": 5},
+      "matched": true
+    },
+    {
+      "name": "negative operator matches empty",
+      "condition": {"combinator": "and", "not": false, "rules": [
+        {"field": "tags", "operator": "doesNotContain", "value": "x"}
+      ]},
+      "record": {"tags": []},
+      "matched": true
+    }
+  ]
+}

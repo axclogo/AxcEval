@@ -1,0 +1,19 @@
+[package]
+name = "axc-eval-python"
+description = "Python bindings for axc-eval"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license-file = "LICENSE"
+repository.workspace = true
+publish = false
+
+[lib]
+name = "axc_eval"
+crate-type = ["cdylib"]
+
+[dependencies]
+axc-eval.workspace = true
+pyo3 = { version = "0.27.2", features = ["abi3-py311", "extension-module"] }
+serde_json.workspace = true
+serde.workspace = true

@@ -1,0 +1,22 @@
+[
+	"type",
+	"unknownKey",
+	"required",
+	"empty",
+	"duplicate",
+	"combinator",
+	"tooDeep",
+	"negationDisabled",
+	"unknownField",
+	"unknownOperator",
+	"fieldRefInvalid",
+	"fieldRefRequired",
+	"rangeLength",
+	"rangeOrder",
+	"option",
+	"date",
+	"datetime",
+	"regex",
+	"outputName",
+	"enumOptions"
+]

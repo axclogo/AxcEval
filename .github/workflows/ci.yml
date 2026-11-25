@@ -1,0 +1,62 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo fmt --all --check
+      - run: cargo clippy --workspace --all-targets -- -D warnings
+      - run: cargo test --workspace --all-targets
+
+  coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: llvm-tools-preview
+      - uses: taiki-e/install-action@cargo-llvm-cov
+      - uses: Swatinem/rust-cache@v2
+      - name: Enforce non-AI core coverage
+        run: cargo llvm-cov -p axc-eval --all-targets --ignore-filename-regex 'decision\.rs' --fail-under-lines 98
+
+  python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: astral-sh/setup-uv@v6
+      - run: uv venv --python 3.11
+      - run: uv pip install 'maturin>=1.9,<2'
+      - run: .venv/bin/maturin develop --release --manifest-path crates/axc-eval-python/Cargo.toml
+      - run: .venv/bin/python scripts/smoke-python.py
+
+  wasm:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+      - uses: Swatinem/rust-cache@v2
+      - uses: jetli/wasm-pack-action@v0.4.0
+      - run: wasm-pack build crates/axc-eval-wasm --release --target nodejs --out-dir ../../dist/package
+      - run: node scripts/smoke-wasm.cjs dist/package/axc_eval_wasm.js
+      - name: Check WebAssembly size
+        run: test "$(wc -c < dist/package/axc_eval_wasm_bg.wasm)" -le 1048576

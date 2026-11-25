@@ -1,0 +1,10 @@
+/target/
+/.venv/
+__pycache__/
+*.so
+*.dylib
+*.dll
+*.wasm
+/crates/axc-eval-wasm/pkg/
+/dist/
+AxcEval.md

@@ -1,0 +1,352 @@
+{
+	"catalog": {
+		"maxLevels": 3,
+		"fields": [
+			{
+				"name": "title",
+				"label": "Title"
+			},
+			{
+				"name": "count",
+				"label": "Count",
+				"dataType": "number",
+				"valueSources": ["value", "field"]
+			},
+			{
+				"name": "limit",
+				"label": "Limit",
+				"dataType": "number"
+			},
+			{
+				"name": "on",
+				"label": "On",
+				"dataType": "boolean"
+			},
+			{
+				"name": "day",
+				"label": "Day",
+				"dataType": "date"
+			},
+			{
+				"name": "at",
+				"label": "At",
+				"dataType": "datetime"
+			},
+			{
+				"name": "kind",
+				"label": "Kind",
+				"dataType": "enum",
+				"values": [
+					{
+						"value": "a",
+						"label": "A"
+					},
+					{
+						"value": "b",
+						"label": "B",
+						"disabled": true
+					}
+				]
+			},
+			{
+				"name": "tags",
+				"label": "Tags",
+				"dataType": "array",
+				"values": [
+					{
+						"value": "x",
+						"label": "X"
+					}
+				]
+			},
+			{
+				"name": "refOnly",
+				"label": "Ref only",
+				"dataType": "number",
+				"valueSources": ["field"]
+			},
+			{
+				"name": "off",
+				"label": "Off",
+				"disabled": true
+			}
+		]
+	},
+	"cases": [
+		{
+			"name": "valid",
+			"value": {
+				"precondition": null,
+				"input_fields": ["title"],
+				"instruction": "Judge",
+				"outputs": [
+					{
+						"name": "category",
+						"label": "Category",
+						"type": "enum",
+						"options": ["a"]
+					}
+				],
+				"postcondition": {
+					"combinator": "and",
+					"not": false,
+					"rules": [
+						{
+							"field": "ai.category",
+							"operator": "=",
+							"value": "a"
+						},
+						{
+							"field": "ai.matched",
+							"operator": "=",
+							"value": true
+						}
+					]
+				}
+			},
+			"issues": []
+		},
+		{
+			"name": "unknownKey: model in plan",
+			"value": {
+				"precondition": null,
+				"input_fields": ["title"],
+				"instruction": "Judge",
+				"outputs": [
+					{
+						"name": "category",
+						"label": "Category",
+						"type": "enum",
+						"options": ["a"]
+					}
+				],
+				"postcondition": {
+					"combinator": "and",
+					"not": false,
+					"rules": [
+						{
+							"field": "ai.category",
+							"operator": "=",
+							"value": "a"
+						},
+						{
+							"field": "ai.matched",
+							"operator": "=",
+							"value": true
+						}
+					]
+				},
+				"model": "m"
+			},
+			"issues": [
+				{
+					"code": "unknownKey",
+					"path": ["model"],
+					"params": {
+						"key": "model"
+					}
+				}
+			]
+		},
+		{
+			"name": "empty: input_fields",
+			"value": {
+				"precondition": null,
+				"input_fields": [],
+				"instruction": "Judge",
+				"outputs": [
+					{
+						"name": "category",
+						"label": "Category",
+						"type": "enum",
+						"options": ["a"]
+					}
+				],
+				"postcondition": {
+					"combinator": "and",
+					"not": false,
+					"rules": [
+						{
+							"field": "ai.category",
+							"operator": "=",
+							"value": "a"
+						},
+						{
+							"field": "ai.matched",
+							"operator": "=",
+							"value": true
+						}
+					]
+				}
+			},
+			"issues": [
+				{
+					"code": "empty",
+					"path": ["input_fields"]
+				}
+			]
+		},
+		{
+			"name": "unknownField: input field",
+			"value": {
+				"precondition": null,
+				"input_fields": ["nope"],
+				"instruction": "Judge",
+				"outputs": [
+					{
+						"name": "category",
+						"label": "Category",
+						"type": "enum",
+						"options": ["a"]
+					}
+				],
+				"postcondition": {
+					"combinator": "and",
+					"not": false,
+					"rules": [
+						{
+							"field": "ai.category",
+							"operator": "=",
+							"value": "a"
+						},
+						{
+							"field": "ai.matched",
+							"operator": "=",
+							"value": true
+						}
+					]
+				}
+			},
+			"issues": [
+				{
+					"code": "unknownField",
+					"path": ["input_fields", 0],
+					"params": {
+						"field": "nope"
+					}
+				}
+			]
+		},
+		{
+			"name": "required: instruction",
+			"value": {
+				"precondition": null,
+				"input_fields": ["title"],
+				"instruction": " ",
+				"outputs": [
+					{
+						"name": "category",
+						"label": "Category",
+						"type": "enum",
+						"options": ["a"]
+					}
+				],
+				"postcondition": {
+					"combinator": "and",
+					"not": false,
+					"rules": [
+						{
+							"field": "ai.category",
+							"operator": "=",
+							"value": "a"
+						},
+						{
+							"field": "ai.matched",
+							"operator": "=",
+							"value": true
+						}
+					]
+				}
+			},
+			"issues": [
+				{
+					"code": "required",
+					"path": ["instruction"]
+				}
+			]
+		},
+		{
+			"name": "outputName: reserved",
+			"value": {
+				"precondition": null,
+				"input_fields": ["title"],
+				"instruction": "Judge",
+				"outputs": [
+					{
+						"name": "matched",
+						"label": "M",
+						"type": "string",
+						"options": []
+					}
+				],
+				"postcondition": null
+			},
+			"issues": [
+				{
+					"code": "outputName",
+					"path": ["outputs", 0, "name"],
+					"params": {
+						"name": "matched"
+					}
+				}
+			]
+		},
+		{
+			"name": "enumOptions",
+			"value": {
+				"precondition": null,
+				"input_fields": ["title"],
+				"instruction": "Judge",
+				"outputs": [
+					{
+						"name": "k",
+						"label": "K",
+						"type": "enum",
+						"options": []
+					}
+				],
+				"postcondition": null
+			},
+			"issues": [
+				{
+					"code": "enumOptions",
+					"path": ["outputs", 0, "options"]
+				}
+			]
+		},
+		{
+			"name": "unknownField: postcondition uses undeclared output",
+			"value": {
+				"precondition": null,
+				"input_fields": ["title"],
+				"instruction": "Judge",
+				"outputs": [],
+				"postcondition": {
+					"combinator": "and",
+					"not": false,
+					"rules": [
+						{
+							"field": "ai.category",
+							"operator": "=",
+							"value": "a"
+						},
+						{
+							"field": "ai.matched",
+							"operator": "=",
+							"value": true
+						}
+					]
+				}
+			},
+			"issues": [
+				{
+					"code": "unknownField",
+					"path": ["postcondition", "rules", 0, "field"],
+					"params": {
+						"field": "ai.category"
+					}
+				}
+			]
+		}
+	]
+}

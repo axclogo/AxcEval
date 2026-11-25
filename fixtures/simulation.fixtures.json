@@ -1,0 +1,161 @@
+{
+  "cases": [
+    {
+      "name": "negated group blocks and preserves short circuits",
+      "catalog": {
+        "fields": [
+          {"name": "score", "label": "Score", "dataType": "number"},
+          {"name": "country", "label": "Country"},
+          {"name": "vip", "label": "VIP", "dataType": "boolean"},
+          {"name": "status", "label": "Status", "dataType": "enum", "values": [{"value": "active", "label": "Active"}]}
+        ]
+      },
+      "condition": {
+        "combinator": "and",
+        "not": false,
+        "rules": [
+          {"field": "score", "operator": ">=", "value": 80},
+          {
+            "combinator": "or",
+            "not": true,
+            "rules": [
+              {"field": "country", "operator": "=", "value": "US"},
+              {"field": "vip", "operator": "=", "value": true}
+            ]
+          },
+          {"field": "status", "operator": "=", "value": "active"}
+        ]
+      },
+      "record": {"score": 90, "country": "US", "vip": true, "status": "active"},
+      "allowEmpty": false,
+      "expected": {
+        "matched": false,
+        "trace": {
+          "kind": "group",
+          "path": [],
+          "combinator": "and",
+          "negated": false,
+          "rawMatched": false,
+          "matched": false,
+          "shortCircuitAt": 1,
+          "children": [
+            {"kind": "rule", "path": ["rules", 0], "field": "score", "operator": ">=", "matched": true},
+            {
+              "kind": "group",
+              "path": ["rules", 1],
+              "combinator": "or",
+              "negated": true,
+              "rawMatched": true,
+              "matched": false,
+              "shortCircuitAt": 0,
+              "children": [
+                {"kind": "rule", "path": ["rules", 1, "rules", 0], "field": "country", "operator": "=", "matched": true},
+                {"kind": "skipped", "path": ["rules", 1, "rules", 1], "reason": "orShortCircuit"}
+              ]
+            },
+            {"kind": "skipped", "path": ["rules", 2], "reason": "andShortCircuit"}
+          ]
+        },
+        "decisiveRules": [
+          {"path": ["rules", 1, "rules", 0], "matched": true}
+        ]
+      }
+    },
+    {
+      "name": "failed or group reports all contributing rules",
+      "catalog": {
+        "fields": [
+          {"name": "score", "label": "Score", "dataType": "number"},
+          {"name": "vip", "label": "VIP", "dataType": "boolean"}
+        ]
+      },
+      "condition": {
+        "combinator": "or",
+        "not": false,
+        "rules": [
+          {"field": "score", "operator": ">", "value": 100},
+          {"field": "vip", "operator": "=", "value": true}
+        ]
+      },
+      "record": {"score": 90, "vip": false},
+      "allowEmpty": false,
+      "expected": {
+        "matched": false,
+        "trace": {
+          "kind": "group",
+          "path": [],
+          "combinator": "or",
+          "negated": false,
+          "rawMatched": false,
+          "matched": false,
+          "children": [
+            {"kind": "rule", "path": ["rules", 0], "field": "score", "operator": ">", "matched": false},
+            {"kind": "rule", "path": ["rules", 1], "field": "vip", "operator": "=", "matched": false}
+          ]
+        },
+        "decisiveRules": [
+          {"path": ["rules", 0], "matched": false},
+          {"path": ["rules", 1], "matched": false}
+        ]
+      }
+    },
+    {
+      "name": "successful and group reports every contributing rule",
+      "catalog": {
+        "fields": [
+          {"name": "score", "label": "Score", "dataType": "number"},
+          {"name": "vip", "label": "VIP", "dataType": "boolean"}
+        ]
+      },
+      "condition": {
+        "combinator": "and",
+        "not": false,
+        "rules": [
+          {"field": "score", "operator": ">=", "value": 80},
+          {"field": "vip", "operator": "=", "value": true}
+        ]
+      },
+      "record": {"score": 90, "vip": true},
+      "allowEmpty": false,
+      "expected": {
+        "matched": true,
+        "trace": {
+          "kind": "group",
+          "path": [],
+          "combinator": "and",
+          "negated": false,
+          "rawMatched": true,
+          "matched": true,
+          "children": [
+            {"kind": "rule", "path": ["rules", 0], "field": "score", "operator": ">=", "matched": true},
+            {"kind": "rule", "path": ["rules", 1], "field": "vip", "operator": "=", "matched": true}
+          ]
+        },
+        "decisiveRules": [
+          {"path": ["rules", 0], "matched": true},
+          {"path": ["rules", 1], "matched": true}
+        ]
+      }
+    },
+    {
+      "name": "allowed empty root has an empty explanation",
+      "catalog": {"fields": []},
+      "condition": {"combinator": "and", "not": false, "rules": []},
+      "record": {},
+      "allowEmpty": true,
+      "expected": {
+        "matched": true,
+        "trace": {
+          "kind": "group",
+          "path": [],
+          "combinator": "and",
+          "negated": false,
+          "rawMatched": true,
+          "matched": true,
+          "children": []
+        },
+        "decisiveRules": []
+      }
+    }
+  ]
+}

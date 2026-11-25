@@ -1,0 +1,877 @@
+{
+	"catalog": {
+		"maxLevels": 3,
+		"fields": [
+			{
+				"name": "title",
+				"label": "Title"
+			},
+			{
+				"name": "count",
+				"label": "Count",
+				"dataType": "number",
+				"valueSources": ["value", "field"]
+			},
+			{
+				"name": "limit",
+				"label": "Limit",
+				"dataType": "number"
+			},
+			{
+				"name": "on",
+				"label": "On",
+				"dataType": "boolean"
+			},
+			{
+				"name": "day",
+				"label": "Day",
+				"dataType": "date"
+			},
+			{
+				"name": "at",
+				"label": "At",
+				"dataType": "datetime"
+			},
+			{
+				"name": "kind",
+				"label": "Kind",
+				"dataType": "enum",
+				"values": [
+					{
+						"value": "a",
+						"label": "A"
+					},
+					{
+						"value": "b",
+						"label": "B",
+						"disabled": true
+					}
+				]
+			},
+			{
+				"name": "tags",
+				"label": "Tags",
+				"dataType": "array",
+				"values": [
+					{
+						"value": "x",
+						"label": "X"
+					}
+				]
+			},
+			{
+				"name": "refOnly",
+				"label": "Ref only",
+				"dataType": "number",
+				"valueSources": ["field"]
+			},
+			{
+				"name": "off",
+				"label": "Off",
+				"disabled": true
+			}
+		]
+	},
+	"cases": [
+		{
+			"name": "valid: every value type",
+			"value": {
+				"combinator": "and",
+				"not": false,
+				"rules": [
+					{
+						"field": "title",
+						"operator": "contains",
+						"value": "a"
+					},
+					{
+						"field": "count",
+						"operator": "between",
+						"value": [1, 2]
+					},
+					{
+						"field": "on",
+						"operator": "=",
+						"value": false
+					},
+					{
+						"field": "day",
+						"operator": "=",
+						"value": "2024-02-29"
+					},
+					{
+						"field": "at",
+						"operator": ">",
+						"value": "2024-01-01T00:00:00+08:00"
+					},
+					{
+						"field": "kind",
+						"operator": "in",
+						"value": ["a"]
+					},
+					{
+						"field": "tags",
+						"operator": "hasAll",
+						"value": ["x"]
+					},
+					{
+						"field": "title",
+						"operator": "null",
+						"value": null
+					},
+					{
+						"field": "count",
+						"operator": ">",
+						"value": "limit",
+						"valueSource": "field"
+					},
+					{
+						"combinator": "and",
+						"not": false,
+						"rules": [
+							{
+								"field": "title",
+								"operator": "=",
+								"value": "nested"
+							}
+						]
+					}
+				]
+			},
+			"issues": []
+		},
+		{
+			"name": "valid: empty root with allowEmpty",
+			"options": {
+				"allowEmpty": true
+			},
+			"value": {
+				"combinator": "and",
+				"not": false,
+				"rules": []
+			},
+			"issues": []
+		},
+		{
+			"name": "valid: negation",
+			"value": {
+				"combinator": "and",
+				"not": true,
+				"rules": [
+					{
+						"field": "title",
+						"operator": "=",
+						"value": "a"
+					}
+				]
+			},
+			"issues": []
+		},
+		{
+			"name": "negationDisabled",
+			"catalog": {
+				"allowNot": false
+			},
+			"value": {
+				"combinator": "and",
+				"not": true,
+				"rules": [
+					{
+						"field": "title",
+						"operator": "=",
+						"value": "a"
+					}
+				]
+			},
+			"issues": [
+				{
+					"code": "negationDisabled",
+					"path": ["not"]
+				}
+			]
+		},
+		{
+			"name": "type: root not an object",
+			"value": "x",
+			"issues": [
+				{
+					"code": "type",
+					"path": [],
+					"params": {
+						"expected": "object"
+					}
+				}
+			]
+		},
+		{
+			"name": "unknownKey: extra group key",
+			"value": {
+				"combinator": "and",
+				"not": false,
+				"rules": [
+					{
+						"field": "title",
+						"operator": "=",
+						"value": "a"
+					}
+				],
+				"id": 1
+			},
+			"issues": [
+				{
+					"code": "unknownKey",
+					"path": ["id"],
+					"params": {
+						"key": "id"
+					}
+				}
+			]
+		},
+		{
+			"name": "unknownKey: extra rule key",
+			"value": {
+				"combinator": "and",
+				"not": false,
+				"rules": [
+					{
+						"field": "title",
+						"operator": "=",
+						"value": "a",
+						"id": 1
+					}
+				]
+			},
+			"issues": [
+				{
+					"code": "unknownKey",
+					"path": ["rules", 0, "id"],
+					"params": {
+						"key": "id"
+					}
+				}
+			]
+		},
+		{
+			"name": "combinator",
+			"value": {
+				"combinator": "xor",
+				"not": false,
+				"rules": [
+					{
+						"field": "title",
+						"operator": "=",
+						"value": "a"
+					}
+				]
+			},
+			"issues": [
+				{
+					"code": "combinator",
+					"path": ["combinator"]
+				}
+			]
+		},
+		{
+			"name": "type: not is not boolean",
+			"value": {
+				"combinator": "and",
+				"not": "no",
+				"rules": [
+					{
+						"field": "title",
+						"operator": "=",
+						"value": "a"
+					}
+				]
+			},
+			"issues": [
+				{
+					"code": "type",
+					"path": ["not"],
+					"params": {
+						"expected": "boolean"
+					}
+				}
+			]
+		},
+		{
+			"name": "empty: root group",
+			"value": {
+				"combinator": "and",
+				"not": false,
+				"rules": []
+			},
+			"issues": [
+				{
+					"code": "empty",
+					"path": ["rules"]
+				}
+			]
+		},
+		{
+			"name": "empty: nested group even with allowEmpty",
+			"options": {
+				"allowEmpty": true
+			},
+			"value": {
+				"combinator": "and",
+				"not": false,
+				"rules": [
+					{
+						"combinator": "and",
+						"not": false,
+						"rules": []
+					}
+				]
+			},
+			"issues": [
+				{
+					"code": "empty",
+					"path": ["rules", 0, "rules"]
+				}
+			]
+		},
+		{
+			"name": "tooDeep",
+			"value": {
+				"combinator": "and",
+				"not": false,
+				"rules": [
+					{
+						"combinator": "and",
+						"not": false,
+						"rules": [
+							{
+								"combinator": "and",
+								"not": false,
+								"rules": [
+									{
+										"combinator": "and",
+										"not": false,
+										"rules": [
+											{
+												"field": "title",
+												"operator": "=",
+												"value": "a"
+											}
+										]
+									}
+								]
+							}
+						]
+					}
+				]
+			},
+			"issues": [
+				{
+					"code": "tooDeep",
+					"path": ["rules", 0, "rules", 0, "rules", 0],
+					"params": {
+						"max": 3
+					}
+				}
+			]
+		},
+		{
+			"name": "unknownField",
+			"value": {
+				"combinator": "and",
+				"not": false,
+				"rules": [
+					{
+						"field": "nope",
+						"operator": "=",
+						"value": "a"
+					}
+				]
+			},
+			"issues": [
+				{
+					"code": "unknownField",
+					"path": ["rules", 0, "field"],
+					"params": {
+						"field": "nope"
+					}
+				}
+			]
+		},
+		{
+			"name": "unknownField: disabled",
+			"value": {
+				"combinator": "and",
+				"not": false,
+				"rules": [
+					{
+						"field": "off",
+						"operator": "=",
+						"value": "a"
+					}
+				]
+			},
+			"issues": [
+				{
+					"code": "unknownField",
+					"path": ["rules", 0, "field"],
+					"params": {
+						"field": "off"
+					}
+				}
+			]
+		},
+		{
+			"name": "unknownOperator",
+			"value": {
+				"combinator": "and",
+				"not": false,
+				"rules": [
+					{
+						"field": "count",
+						"operator": "contains",
+						"value": "a"
+					}
+				]
+			},
+			"issues": [
+				{
+					"code": "unknownOperator",
+					"path": ["rules", 0, "operator"],
+					"params": {
+						"operator": "contains"
+					}
+				}
+			]
+		},
+		{
+			"name": "required: missing value",
+			"value": {
+				"combinator": "and",
+				"not": false,
+				"rules": [
+					{
+						"field": "title",
+						"operator": "="
+					}
+				]
+			},
+			"issues": [
+				{
+					"code": "required",
+					"path": ["rules", 0, "value"]
+				}
+			]
+		},
+		{
+			"name": "required: blank text",
+			"value": {
+				"combinator": "and",
+				"not": false,
+				"rules": [
+					{
+						"field": "title",
+						"operator": "=",
+						"value": "  "
+					}
+				]
+			},
+			"issues": [
+				{
+					"code": "required",
+					"path": ["rules", 0, "value"]
+				}
+			]
+		},
+		{
+			"name": "type: string for number",
+			"value": {
+				"combinator": "and",
+				"not": false,
+				"rules": [
+					{
+						"field": "count",
+						"operator": "=",
+						"value": "1"
+					}
+				]
+			},
+			"issues": [
+				{
+					"code": "type",
+					"path": ["rules", 0, "value"],
+					"params": {
+						"expected": "number"
+					}
+				}
+			]
+		},
+		{
+			"name": "type: string for boolean",
+			"value": {
+				"combinator": "and",
+				"not": false,
+				"rules": [
+					{
+						"field": "on",
+						"operator": "=",
+						"value": "false"
+					}
+				]
+			},
+			"issues": [
+				{
+					"code": "type",
+					"path": ["rules", 0, "value"],
+					"params": {
+						"expected": "boolean"
+					}
+				}
+			]
+		},
+		{
+			"name": "type: unary value not null",
+			"value": {
+				"combinator": "and",
+				"not": false,
+				"rules": [
+					{
+						"field": "title",
+						"operator": "null",
+						"value": ""
+					}
+				]
+			},
+			"issues": [
+				{
+					"code": "type",
+					"path": ["rules", 0, "value"],
+					"params": {
+						"expected": "null"
+					}
+				}
+			]
+		},
+		{
+			"name": "type: list not array",
+			"value": {
+				"combinator": "and",
+				"not": false,
+				"rules": [
+					{
+						"field": "title",
+						"operator": "in",
+						"value": "a"
+					}
+				]
+			},
+			"issues": [
+				{
+					"code": "type",
+					"path": ["rules", 0, "value"],
+					"params": {
+						"expected": "array"
+					}
+				}
+			]
+		},
+		{
+			"name": "empty: list",
+			"value": {
+				"combinator": "and",
+				"not": false,
+				"rules": [
+					{
+						"field": "title",
+						"operator": "in",
+						"value": []
+					}
+				]
+			},
+			"issues": [
+				{
+					"code": "empty",
+					"path": ["rules", 0, "value"]
+				}
+			]
+		},
+		{
+			"name": "duplicate",
+			"value": {
+				"combinator": "and",
+				"not": false,
+				"rules": [
+					{
+						"field": "title",
+						"operator": "in",
+						"value": ["a", "a"]
+					}
+				]
+			},
+			"issues": [
+				{
+					"code": "duplicate",
+					"path": ["rules", 0, "value", 1],
+					"params": {
+						"value": "a"
+					}
+				}
+			]
+		},
+		{
+			"name": "rangeLength",
+			"value": {
+				"combinator": "and",
+				"not": false,
+				"rules": [
+					{
+						"field": "count",
+						"operator": "between",
+						"value": [1]
+					}
+				]
+			},
+			"issues": [
+				{
+					"code": "rangeLength",
+					"path": ["rules", 0, "value"]
+				}
+			]
+		},
+		{
+			"name": "rangeOrder",
+			"value": {
+				"combinator": "and",
+				"not": false,
+				"rules": [
+					{
+						"field": "count",
+						"operator": "between",
+						"value": [2, 1]
+					}
+				]
+			},
+			"issues": [
+				{
+					"code": "rangeOrder",
+					"path": ["rules", 0, "value"]
+				}
+			]
+		},
+		{
+			"name": "option: unknown",
+			"value": {
+				"combinator": "and",
+				"not": false,
+				"rules": [
+					{
+						"field": "kind",
+						"operator": "=",
+						"value": "z"
+					}
+				]
+			},
+			"issues": [
+				{
+					"code": "option",
+					"path": ["rules", 0, "value"],
+					"params": {
+						"value": "z"
+					}
+				}
+			]
+		},
+		{
+			"name": "option: disabled",
+			"value": {
+				"combinator": "and",
+				"not": false,
+				"rules": [
+					{
+						"field": "kind",
+						"operator": "=",
+						"value": "b"
+					}
+				]
+			},
+			"issues": [
+				{
+					"code": "option",
+					"path": ["rules", 0, "value"],
+					"params": {
+						"value": "b"
+					}
+				}
+			]
+		},
+		{
+			"name": "date",
+			"value": {
+				"combinator": "and",
+				"not": false,
+				"rules": [
+					{
+						"field": "day",
+						"operator": "=",
+						"value": "2023-02-29"
+					}
+				]
+			},
+			"issues": [
+				{
+					"code": "date",
+					"path": ["rules", 0, "value"]
+				}
+			]
+		},
+		{
+			"name": "datetime: no offset",
+			"value": {
+				"combinator": "and",
+				"not": false,
+				"rules": [
+					{
+						"field": "at",
+						"operator": "=",
+						"value": "2024-01-01T00:00:00"
+					}
+				]
+			},
+			"issues": [
+				{
+					"code": "datetime",
+					"path": ["rules", 0, "value"]
+				}
+			]
+		},
+		{
+			"name": "regex",
+			"value": {
+				"combinator": "and",
+				"not": false,
+				"rules": [
+					{
+						"field": "title",
+						"operator": "regex",
+						"value": "("
+					}
+				]
+			},
+			"issues": [
+				{
+					"code": "regex",
+					"path": ["rules", 0, "value"]
+				}
+			]
+		},
+		{
+			"name": "fieldRefInvalid: not allowed",
+			"value": {
+				"combinator": "and",
+				"not": false,
+				"rules": [
+					{
+						"field": "limit",
+						"operator": "=",
+						"value": "count",
+						"valueSource": "field"
+					}
+				]
+			},
+			"issues": [
+				{
+					"code": "fieldRefInvalid",
+					"path": ["rules", 0, "valueSource"]
+				}
+			]
+		},
+		{
+			"name": "fieldRefInvalid: other type",
+			"value": {
+				"combinator": "and",
+				"not": false,
+				"rules": [
+					{
+						"field": "count",
+						"operator": "=",
+						"value": "title",
+						"valueSource": "field"
+					}
+				]
+			},
+			"issues": [
+				{
+					"code": "fieldRefInvalid",
+					"path": ["rules", 0, "value"]
+				}
+			]
+		},
+		{
+			"name": "fieldRefRequired",
+			"value": {
+				"combinator": "and",
+				"not": false,
+				"rules": [
+					{
+						"field": "refOnly",
+						"operator": "=",
+						"value": 1
+					}
+				]
+			},
+			"issues": [
+				{
+					"code": "fieldRefRequired",
+					"path": ["rules", 0, "value"]
+				}
+			]
+		},
+		{
+			"name": "every issue is reported",
+			"value": {
+				"combinator": "and",
+				"not": false,
+				"rules": [
+					{
+						"field": "count",
+						"operator": "=",
+						"value": "x"
+					},
+					{
+						"field": "nope",
+						"operator": "=",
+						"value": 1
+					},
+					{
+						"combinator": "and",
+						"not": false,
+						"rules": [
+							{
+								"field": "title",
+								"operator": "=",
+								"value": ""
+							}
+						]
+					}
+				]
+			},
+			"issues": [
+				{
+					"code": "type",
+					"path": ["rules", 0, "value"],
+					"params": {
+						"expected": "number"
+					}
+				},
+				{
+					"code": "unknownField",
+					"path": ["rules", 1, "field"],
+					"params": {
+						"field": "nope"
+					}
+				},
+				{
+					"code": "required",
+					"path": ["rules", 2, "rules", 0, "value"]
+				}
+			]
+		}
+	]
+}

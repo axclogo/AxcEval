@@ -1,0 +1,34 @@
+[workspace]
+members = [
+  "crates/axc-eval",
+  "crates/axc-eval-python",
+  "crates/axc-eval-wasm",
+]
+resolver = "2"
+
+[workspace.package]
+version = "0.3.0"
+edition = "2024"
+rust-version = "1.85"
+license = "Apache-2.0"
+repository = "https://github.com/axclogo/AxcEval"
+
+[workspace.dependencies]
+axc-eval = { path = "crates/axc-eval", version = "0.3.0" }
+regex = { version = "1.12.2", default-features = false, features = ["std", "perf"] }
+serde = { version = "1.0.228", features = ["derive"] }
+serde_json = { version = "1.0.145", features = ["preserve_order"] }
+sha2 = "0.10.9"
+
+[profile.release]
+codegen-units = 1
+lto = true
+opt-level = "z"
+panic = "abort"
+strip = true
+
+[profile.release.package.axc-eval-wasm]
+strip = false
+
+[profile.release.package.axc-eval-python]
+strip = false

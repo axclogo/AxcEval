@@ -1,0 +1,28 @@
+{
+  "cases": [
+    {
+      "name": "all gates pass",
+      "catalog": {"fields": [{"name": "text", "label": "Text"}]},
+      "decision": {
+        "model": "m",
+        "precondition": null,
+        "input_fields": ["text"],
+        "instruction": "Classify.",
+        "outputs": [{"name": "category", "label": "Category", "type": "enum", "options": ["a", "b"]}],
+        "postcondition": {"combinator": "and", "not": false, "rules": [
+          {"field": "ai.matched", "operator": "=", "value": true},
+          {"field": "ai.category", "operator": "=", "value": "a"}
+        ]}
+      },
+      "record": {"text": "alpha"},
+      "answer": {"matched": true, "reason": "ok", "category": "a"},
+      "expected": {
+        "status": "decided",
+        "request_id": "faf0e0541539530c11407f244ea20c67b5552a99875f77beda83e8a5812f15ad",
+        "matched": true,
+        "answer": {"matched": true, "reason": "ok", "category": "a"},
+        "gates": {"pre": true, "ai": true, "post": true}
+      }
+    }
+  ]
+}

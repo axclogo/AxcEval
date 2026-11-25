@@ -1,0 +1,20 @@
+{
+  "cases": [
+    {
+      "name": "case-insensitive text containment",
+      "catalog": {"fields": [{"name": "text", "label": "Text"}]},
+      "condition": {"combinator": "and", "not": false, "rules": [
+        {"field": "text", "operator": "contains", "value": "alpha"}
+      ]},
+      "columns": {"text": {"expression": "title_col", "column_type": "String"}},
+      "clickhouse": {
+        "sql": "(ifNull((positionCaseInsensitiveUTF8(title_col, {p0:String}) > 0), FALSE))",
+        "params": {"p0": "alpha"}
+      },
+      "duckdb": {
+        "sql": "(COALESCE((lower(title_col) LIKE '%' || lower('alpha') || '%' ESCAPE '\\\\'), FALSE))",
+        "params": {}
+      }
+    }
+  ]
+}
