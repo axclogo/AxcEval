@@ -55,7 +55,10 @@ jobs:
         with:
           targets: wasm32-unknown-unknown
       - uses: Swatinem/rust-cache@v2
-      - uses: jetli/wasm-pack-action@v0.4.0
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: wasm-pack@0.15.1
+          fallback: none
       - run: wasm-pack build crates/axc-eval-wasm --release --target nodejs --out-dir ../../dist/package
       - run: node scripts/smoke-wasm.cjs dist/package/axc_eval_wasm.js
       - name: Check WebAssembly size

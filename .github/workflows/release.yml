@@ -42,7 +42,10 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
         with:
           targets: wasm32-unknown-unknown
-      - uses: jetli/wasm-pack-action@v0.4.0
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: wasm-pack@0.15.1
+          fallback: none
       - run: wasm-pack build crates/axc-eval-wasm --release --target bundler --out-dir ../../dist/package
       - run: node scripts/package-wasm.mjs
       - run: npm pack ./dist/package --pack-destination ./dist
@@ -59,7 +62,7 @@ jobs:
         with:
           path: dist
           merge-multiple: true
-      - uses: softprops/action-gh-release@v2
+      - uses: softprops/action-gh-release@v3
         with:
           files: dist/*
           generate_release_notes: true
