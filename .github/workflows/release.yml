@@ -20,7 +20,7 @@ jobs:
             target: aarch64
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - run: node scripts/check-release-tag.mjs
       - uses: dtolnay/rust-toolchain@stable
       - uses: PyO3/maturin-action@v1
@@ -37,7 +37,7 @@ jobs:
   wasm:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - run: node scripts/check-release-tag.mjs
       - uses: dtolnay/rust-toolchain@stable
         with:
