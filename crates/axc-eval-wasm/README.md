@@ -1,16 +1,16 @@
-# @axc/eval
+# @axclogo/eval
 
 Deterministic WebAssembly evaluator for typed condition trees and two-phase decision plans. The package performs no
 network, database, filesystem, clock, or model I/O. Applications provide catalogs, records and model answers explicitly.
 
 This is AxcEval's official npm distribution. It is an optional ESM package for browser bundlers and is not a transitive
-dependency of `@axc/uikit`. Applications using the UIKit condition simulator install this package explicitly and pass
+dependency of `@axclogo/uikit`. Applications using the UIKit condition simulator install this package explicitly and pass
 its `simulateCondition` export through the component's `simulate` prop.
 
 ## Install
 
 ```sh
-npm install @axc/eval
+npm install @axclogo/eval
 ```
 
 The package targets browser bundlers with WebAssembly module support. The bundler loads the included `.wasm` asset;
@@ -19,7 +19,7 @@ callers do not run a separate initialization function. The package has one publi
 ## Condition simulation
 
 ```ts
-import { simulateCondition } from "@axc/eval";
+import { simulateCondition } from "@axclogo/eval";
 
 const catalog = {
   fields: [{ name: "score", label: "Score", dataType: "number" }],

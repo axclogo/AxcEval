@@ -1,7 +1,7 @@
 import { appendFileSync, readFileSync, statSync } from "node:fs";
 import { pathToFileURL } from "node:url";
 
-const expectedName = "@axc/eval";
+const expectedName = "@axclogo/eval";
 const expectedRepository = "git+https://github.com/axclogo/AxcEval.git";
 const registryUrl = "https://registry.npmjs.org";
 const stableVersion = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/;

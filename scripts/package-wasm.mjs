@@ -17,7 +17,7 @@ if (!version || !/^\d+\.\d+\.\d+$/.test(version))
 if (tag && tag !== `v${version}`)
   throw new Error(`Release tag ${tag} does not match Cargo ${version}`);
 
-manifest.name = "@axc/eval";
+manifest.name = "@axclogo/eval";
 manifest.version = version;
 manifest.description =
   "Deterministic WebAssembly evaluator for typed condition trees and decision plans";

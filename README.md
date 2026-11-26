@@ -25,11 +25,11 @@ and SQL column expressions explicitly.
 
 | Runtime                 | Distribution                        | Status                                                |
 | ----------------------- | ----------------------------------- | ----------------------------------------------------- |
-| JavaScript / TypeScript | `npm install @axc/eval`             | Official ESM WebAssembly package for browser bundlers |
+| JavaScript / TypeScript | `npm install @axclogo/eval`         | Official ESM WebAssembly package for browser bundlers |
 | Python 3.11+            | Versioned wheels on GitHub Releases | Native abi3 binding; not published to PyPI            |
 | Rust                    | Workspace source in this repository | Normative core; not published to crates.io            |
 
-The npm package is optional and independent of `@axc/uikit`. UIKit does not bundle Eval or WASM; applications that use
+The npm package is optional and independent of `@axclogo/uikit`. UIKit does not bundle Eval or WASM; applications that use
 the condition simulator explicitly pass Eval's `simulateCondition` export to the component.
 
 ## Rust
@@ -86,11 +86,11 @@ assert simulation["matched"] is True
 Install the official JavaScript/WebAssembly package from npm:
 
 ```sh
-npm install @axc/eval
+npm install @axclogo/eval
 ```
 
 ```ts
-import { simulateCondition } from "@axc/eval";
+import { simulateCondition } from "@axclogo/eval";
 
 const result = simulateCondition(condition, catalog, record, false);
 ```

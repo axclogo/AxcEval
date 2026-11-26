@@ -2,8 +2,8 @@
 
 AxcEval publishes three artifacts from one version tag:
 
-- Python wheels and the `@axc/eval` WebAssembly package are attached to the GitHub Release.
-- `@axc/eval` is published to the public npm Registry through npm Trusted Publisher.
+- Python wheels and the `@axclogo/eval` WebAssembly package are attached to the GitHub Release.
+- `@axclogo/eval` is published to the public npm Registry through npm Trusted Publisher.
 - Rust source remains installable from the repository; crates.io publication is not part of this workflow.
 
 The release workflow is `.github/workflows/release.yml`. It contains no npm token, secret fallback or automatic version
@@ -22,7 +22,7 @@ npm requires a package to exist before a Trusted Publisher can be attached. For 
 The automatic workflow deliberately reports `bootstrap` and fails while the package does not exist. It never converts a
 404, timeout or Registry error into permission to publish.
 
-After bootstrap, configure npmjs.com → `@axc/eval` → Settings → Trusted publishing with these exact values:
+After bootstrap, configure npmjs.com → `@axclogo/eval` → Settings → Trusted publishing with these exact values:
 
 | Setting              | Value               |
 | -------------------- | ------------------- |
@@ -72,7 +72,7 @@ reviewed commit SHAs. No job reads an npm secret, restores an npm dependency cac
 Verify all of the following:
 
 1. The GitHub Release contains the expected wheels and one `axc-eval-<version>.tgz` archive.
-2. npm shows `@axc/eval@<version>`, the expected files, Apache-2.0 license and provenance for OIDC-published versions.
+2. npm shows `@axclogo/eval@<version>`, the expected files, Apache-2.0 license and provenance for OIDC-published versions.
 3. `latest` points to the intended stable version.
 4. A clean browser-bundler project can run the documented `simulateCondition` import.
 5. The source tag, Cargo version, Python version, npm version and changelog section all agree.

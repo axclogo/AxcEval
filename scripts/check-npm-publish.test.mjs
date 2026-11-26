@@ -8,8 +8,8 @@ import {
 } from "./check-npm-publish.mjs";
 
 const manifest = {
-  name: "@axc/eval",
-  version: "0.3.0",
+  name: "@axclogo/eval",
+  version: "0.3.1",
   license: "Apache-2.0",
   repository: { url: "git+https://github.com/axclogo/AxcEval.git" },
   publishConfig: { access: "public", registry: "https://registry.npmjs.org" },
@@ -43,7 +43,11 @@ test("accepts the exact public npm package metadata", () => {
 });
 
 for (const [name, changed, message] of [
-  ["name", { ...manifest, name: "@example/wrong" }, /name must be @axc\/eval/],
+  [
+    "name",
+    { ...manifest, name: "@example/wrong" },
+    /name must be @axclogo\/eval/,
+  ],
   ["version", { ...manifest, version: "0.3.1-beta.1" }, /stable SemVer/],
   ["private flag", { ...manifest, private: true }, /must not be private/],
   ["license", { ...manifest, license: "MIT" }, /license must be Apache-2.0/],
@@ -100,7 +104,7 @@ test("reports bootstrap only for an explicit Registry 404", async () => {
 test("reports an existing immutable version as published", async () => {
   assert.equal(
     await getPublishStatus(manifest, async () =>
-      response(200, { versions: { "0.3.0": {} } }),
+      response(200, { versions: { "0.3.1": {} } }),
     ),
     "published",
   );
@@ -126,7 +130,7 @@ test("uses only the public Registry endpoint and the configured timeout signal",
     },
     () => timeoutSignal,
   );
-  assert.equal(request.url, "https://registry.npmjs.org/%40axc%2Feval");
+  assert.equal(request.url, "https://registry.npmjs.org/%40axclogo%2Feval");
   assert.equal(request.options.signal, timeoutSignal);
 });
 

@@ -93,7 +93,7 @@ jobs:
       - name: Reject an uninitialized npm package
         if: steps.package.outputs.status == 'bootstrap'
         run: |
-          echo '::error::@axc/eval does not exist on npm. Complete the documented one-time bootstrap before Trusted Publisher releases.'
+          echo '::error::@axclogo/eval does not exist on npm. Complete the documented one-time bootstrap before Trusted Publisher releases.'
           exit 1
       - name: Publish with npm Trusted Publisher
         if: steps.package.outputs.publish == 'true'

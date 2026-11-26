@@ -4,7 +4,10 @@ All notable changes are documented here. This project follows Semantic Versionin
 
 ## [Unreleased]
 
-- Add a token-free npm Trusted Publisher release gate for the `@axc/eval` WebAssembly package.
+## [0.3.1] - 2026-11-26
+
+- Publish the WebAssembly binding as `@axclogo/eval` after the originally planned npm scope was unavailable.
+- Add a token-free npm Trusted Publisher release gate for the `@axclogo/eval` WebAssembly package.
 - Publish npm-specific installation, runtime and package-contract documentation.
 
 ## [0.3.0] - 2026-11-25
