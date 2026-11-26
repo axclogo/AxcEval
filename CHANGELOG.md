@@ -4,6 +4,11 @@ All notable changes are documented here. This project follows Semantic Versionin
 
 ## [Unreleased]
 
+## [0.3.2] - 2026-11-26
+
+- Activate token-free npm publication through the verified GitHub Actions Trusted Publisher.
+- Correct the bootstrap documentation to build and inspect the first npm archive from the reviewed release commit.
+
 ## [0.3.1] - 2026-11-26
 
 - Publish the WebAssembly binding as `@axclogo/eval` after the originally planned npm scope was unavailable.
