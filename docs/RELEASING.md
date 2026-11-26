@@ -13,16 +13,31 @@ selection. A version is immutable after publication.
 
 npm requires a package to exist before a Trusted Publisher can be attached. For the first version only:
 
-1. Download the versioned `axc-eval-<version>.tgz` from its GitHub Release.
-2. Inspect it with `npm pack --dry-run <archive>` and run the WebAssembly smoke test from the matching source tag.
-3. Sign in interactively with an npm maintainer account protected by 2FA.
-4. Publish the inspected archive with `npm publish <archive> --access public`.
-5. Sign out locally. Do not create, paste, store or commit an npm token.
+1. Check out the reviewed release commit and run the complete engineering gate.
+2. Build the versioned npm archive and run the WebAssembly smoke test against that exact archive.
+3. Inspect its file list with `npm pack --dry-run <archive>`.
+4. Sign in interactively with an npm maintainer account protected by 2FA.
+5. Publish the inspected archive with `npm publish <archive> --access public`.
+6. Sign out locally. Do not create, paste, store or commit an npm token.
 
 The automatic workflow deliberately reports `bootstrap` and fails while the package does not exist. It never converts a
 404, timeout or Registry error into permission to publish.
 
-After bootstrap, configure npmjs.com → `@axclogo/eval` → Settings → Trusted publishing with these exact values:
+After bootstrap, configure the publisher with npm 11.15.0 or newer:
+
+```sh
+npm trust github @axclogo/eval \
+  --repository axclogo/AxcEval \
+  --file release.yml \
+  --allow-publish \
+  --yes
+npm trust list @axclogo/eval --json
+```
+
+The account must have 2FA enabled and use interactive account authentication. A Granular Access Token with bypass 2FA
+cannot create or query trust configuration; do not add a workflow token fallback when npm returns `E403`.
+
+The equivalent npmjs.com Settings → Trusted publishing values are:
 
 | Setting              | Value               |
 | -------------------- | ------------------- |
