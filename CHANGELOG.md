@@ -4,6 +4,9 @@ All notable changes are documented here. This project follows Semantic Versionin
 
 ## [Unreleased]
 
+- Add a token-free npm Trusted Publisher release gate for the `@axc/eval` WebAssembly package.
+- Publish npm-specific installation, runtime and package-contract documentation.
+
 ## [0.3.0] - 2026-11-25
 
 - Add exact condition simulation traces for frontend record testing, including negation and short-circuit visibility.

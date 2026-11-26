@@ -21,6 +21,17 @@ and SQL column expressions explicitly.
 - Parameterized ClickHouse output and escaped DuckDB output
 - Rust, Python 3.11+ abi3, and WebAssembly targets
 
+## Distributions
+
+| Runtime                 | Distribution                        | Status                                                |
+| ----------------------- | ----------------------------------- | ----------------------------------------------------- |
+| JavaScript / TypeScript | `npm install @axc/eval`             | Official ESM WebAssembly package for browser bundlers |
+| Python 3.11+            | Versioned wheels on GitHub Releases | Native abi3 binding; not published to PyPI            |
+| Rust                    | Workspace source in this repository | Normative core; not published to crates.io            |
+
+The npm package is optional and independent of `@axc/uikit`. UIKit does not bundle Eval or WASM; applications that use
+the condition simulator explicitly pass Eval's `simulateCondition` export to the component.
+
 ## Rust
 
 ```rust
@@ -72,8 +83,22 @@ assert simulation["matched"] is True
 
 ## WebAssembly
 
-The npm release exports `validateCatalog`, `validateCondition`, `matches`, `simulateCondition`, `validateDecision`,
-`evaluateDecision`, `compileSql`, and `operatorsFor`. Inputs and outputs are plain JavaScript values.
+Install the official JavaScript/WebAssembly package from npm:
+
+```sh
+npm install @axc/eval
+```
+
+```ts
+import { simulateCondition } from "@axc/eval";
+
+const result = simulateCondition(condition, catalog, record, false);
+```
+
+The package is ESM for browser bundlers with WebAssembly module support. The bundler loads the included `.wasm` asset;
+callers do not run a separate initialization function. It exports `validateCatalog`, `validateCondition`, `matches`,
+`simulateCondition`, `validateDecision`, `evaluateDecision`, `compileSql`, and `operatorsFor`. Inputs and outputs are
+plain JavaScript values. The npm package is not required by Rust or Python consumers.
 
 ## Protocol and API
 
@@ -99,5 +124,6 @@ CI also builds the Python 3.11 binding with `uv` and executes both binding smoke
 fixtures.
 
 Read [CONTRIBUTING.md](CONTRIBUTING.md) before submitting changes. Security reports follow [SECURITY.md](SECURITY.md).
+Release maintainers follow [docs/RELEASING.md](docs/RELEASING.md).
 
 Licensed under [Apache License 2.0](LICENSE).

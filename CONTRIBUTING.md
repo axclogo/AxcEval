@@ -12,3 +12,6 @@ Thank you for helping improve AxcEval.
 
 Public APIs and issue codes follow semantic versioning. New failure kinds need fixtures and documentation. Do not weaken
 tests or artifact size checks to make a change pass.
+
+Maintainers preparing a release must also follow [`docs/RELEASING.md`](docs/RELEASING.md). npm publication uses Trusted
+Publisher and must never introduce a repository token or token fallback.
