@@ -58,13 +58,11 @@ jobs:
       - run: node scripts/package-wasm.mjs
       - run: node scripts/check-npm-publish.mjs dist/package/package.json --package-only
       - run: npm pack ./dist/package --pack-destination ./dist
-      - run: cp dist/package/package.json dist/npm-package.json
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: wasm-package
-          path: |
-            dist/*.tgz
-            dist/npm-package.json
+          path: dist/*.tgz
+          if-no-files-found: error
 
   npm:
     needs: wasm
@@ -89,7 +87,10 @@ jobs:
       - run: node --test scripts/check-npm-publish.test.mjs
       - name: Check npm package release state
         id: package
-        run: node scripts/check-npm-publish.mjs dist/npm-package.json
+        run: |
+          archive="./dist/axclogo-eval-${GITHUB_REF_NAME#v}.tgz"
+          tar -xOf "$archive" package/package.json > "$RUNNER_TEMP/npm-package.json"
+          node scripts/check-npm-publish.mjs "$RUNNER_TEMP/npm-package.json"
       - name: Reject an uninitialized npm package
         if: steps.package.outputs.status == 'bootstrap'
         run: |
@@ -97,7 +98,7 @@ jobs:
           exit 1
       - name: Publish with npm Trusted Publisher
         if: steps.package.outputs.publish == 'true'
-        run: npm publish "dist/axclogo-eval-${{ steps.package.outputs.version }}.tgz"
+        run: npm publish "./dist/axclogo-eval-${{ steps.package.outputs.version }}.tgz"
 
   github-release:
     needs: [wheels, wasm, npm]

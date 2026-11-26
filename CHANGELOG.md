@@ -4,9 +4,9 @@ All notable changes are documented here. This project follows Semantic Versionin
 
 ## [Unreleased]
 
-## [0.3.2] - 2026-11-26
+## [0.3.3] - 2026-11-26
 
-- Activate token-free npm publication through the verified GitHub Actions Trusted Publisher.
+- Read the release manifest from the packed archive and publish that local file through GitHub Actions. The 0.3.2 tag did not produce an npm release.
 - Correct the bootstrap documentation to build and inspect the first npm archive from the reviewed release commit.
 
 ## [0.3.1] - 2026-11-26

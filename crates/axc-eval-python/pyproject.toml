@@ -4,7 +4,7 @@ build-backend = "maturin"
 
 [project]
 name = "axc-eval"
-version = "0.3.2"
+version = "0.3.3"
 description = "Deterministic evaluator for typed condition trees and decision plans"
 requires-python = ">=3.11"
 license = "Apache-2.0"
