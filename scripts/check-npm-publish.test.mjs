@@ -156,7 +156,10 @@ test("keeps the privileged release workflow tag-bound, pinned and token-free", a
   assert.match(workflow, /persist-credentials: false/);
   assert.match(workflow, /package-manager-cache: false/);
   assert.match(workflow, /node scripts\/check-npm-publish\.mjs/);
-  assert.match(workflow, /npm publish/);
+  assert.match(
+    workflow,
+    /npm publish "dist\/axclogo-eval-\$\{\{ steps\.package\.outputs\.version \}\}\.tgz"/,
+  );
   assert.match(workflow, /status == 'bootstrap'[\s\S]*exit 1/);
   assert.doesNotMatch(workflow, /uses: [^\n]+@v\d/);
   assert.doesNotMatch(workflow, /NPM_TOKEN|NODE_AUTH_TOKEN|secrets\./);

@@ -86,7 +86,7 @@ reviewed commit SHAs. No job reads an npm secret, restores an npm dependency cac
 
 Verify all of the following:
 
-1. The GitHub Release contains the expected wheels and one `axc-eval-<version>.tgz` archive.
+1. The GitHub Release contains the expected wheels and one `axclogo-eval-<version>.tgz` archive.
 2. npm shows `@axclogo/eval@<version>`, the expected files, Apache-2.0 license and provenance for OIDC-published versions.
 3. `latest` points to the intended stable version.
 4. A clean browser-bundler project can run the documented `simulateCondition` import.

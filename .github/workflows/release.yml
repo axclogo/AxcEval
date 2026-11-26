@@ -97,7 +97,7 @@ jobs:
           exit 1
       - name: Publish with npm Trusted Publisher
         if: steps.package.outputs.publish == 'true'
-        run: npm publish "dist/axc-eval-${{ steps.package.outputs.version }}.tgz"
+        run: npm publish "dist/axclogo-eval-${{ steps.package.outputs.version }}.tgz"
 
   github-release:
     needs: [wheels, wasm, npm]
